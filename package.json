@@ -1,5 +1,5 @@
 {
-  "name": "mct-pinball",
+  "name": "pinball",
   "version": "0.0.1",
   "description": "Source code for my pinball tutorial series",
   "main": "index.js",

@@ -85,6 +85,10 @@ class Shape {
     this.velocity = new Vector(velocity);
     this.acceleration = new Vector(acceleration);
   }
+  isPointInPath(ctx, x, y) {
+    this.createPath(ctx);
+    return ctx.isPointInPath(x, y)
+  }
 
   update(delta, game) {
     const { x, y } = this.velocity.multiply(delta);

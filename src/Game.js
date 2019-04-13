@@ -7,12 +7,36 @@ class Game {
     this.height = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.renderFn = this.render.bind(this);
+    this.addEventListeners()
   }
 
   init({ bodies }) {
     this.bodies = bodies.map(body => Shapes[body.type].create(body));
     // this.makeBorders();
     this.render();
+  }
+  addEventListeners() {
+    this.canvas.addEventListener('mousedown', ({offsetX: x, offsetY: y}) => {
+      const shapesUnderCursor = this.bodies.filter(b => b.isPointInPath(this.ctx, x, y))
+      console.log(shapesUnderCursor)
+      this.shapesMoving = shapesUnderCursor
+      this.dragging = {x, y}
+    })
+    this.canvas.addEventListener('mousemove', ({offsetX: x, offsetY: y}) => {
+      if (!this.dragging) return
+      const dx = x - this.dragging.x;
+      const dy = y - this.dragging.y
+      console.log(dx, dy)
+      this.shapesMoving.forEach(s => s.move(dx, dy))
+
+      this.dragging = {x, y}
+    })
+
+    this.canvas.addEventListener('mouseup', e => {
+      this.dragging = false;
+      this.shapesMoving = null
+      console.log(e)
+    })
   }
 
   addBody(...bodies) {

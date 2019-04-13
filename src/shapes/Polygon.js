@@ -1,5 +1,4 @@
 import Shape from "../Shape";
-import Point from "./Point";
 
 class Polygon extends Shape {
   constructor(props) {
@@ -9,7 +8,7 @@ class Polygon extends Shape {
   }
 
   addPoint({ x, y }) {
-    this.points.push(new Point({ x, y }));
+    this.points.push({ x, y });
   }
 
   createPath(ctx) {

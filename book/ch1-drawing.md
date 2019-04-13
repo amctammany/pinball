@@ -183,5 +183,90 @@ class Shape {
 }
 
 export default Shape;
-
 ```
+
+```js
+import Shape from "../Shape";
+
+class Polygon extends Shape {
+  constructor(props) {
+    super(props);
+
+    this.points = props.points;
+  }
+
+  addPoint({ x, y }) {
+    this.points.push({ x, y });
+  }
+
+  createPath(ctx) {
+    ctx.beginPath();
+    this.points.forEach(({ x, y }, i) => {
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    ctx.closePath();
+  }
+
+  move(dx, dy) {
+    this.points = this.points.map(pt => pt.move(dx, dy));
+  }
+}
+
+export default Polygon;
+```
+
+```js
+import Polygon from "./Polygon";
+
+class Rectangle extends Polygon {
+  constructor(props) {
+    const { x, y, width, height } = props;
+    const points = [
+      { x, y },
+      { x: x + width, y },
+      { x: x + width, y: y + height },
+      { x, y: y + height }
+    ];
+    super({ ...props, points });
+  }
+}
+
+export default Rectangle;
+```
+
+```js
+import Shape from "../Shape";
+
+class Circle extends Shape {
+  constructor(props) {
+    super(props);
+
+    this.x = props.x;
+    this.y = props.y;
+    this.radius = props.radius;
+  }
+
+  move(dx, dy) {
+    this.x += dx;
+    this.y += dy;
+  }
+
+  createPath(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+  }
+}
+
+export default Circle;
+```
+
+
+Conclusion
+====
+
+
+

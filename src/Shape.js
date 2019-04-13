@@ -1,4 +1,8 @@
 class Shape {
+  static create(props) {
+    return new this(props);
+  }
+
   constructor({ fillStyle = "red", strokeStyle = "black" }) {
     this.fillStyle = fillStyle;
     this.strokeStyle = strokeStyle;

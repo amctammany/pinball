@@ -4,12 +4,19 @@ class Shape {
     this.strokeStyle = strokeStyle;
   }
 
-  createPath(ctx) {
-    throw "createPath(ctx) not implemented";
+  // eslint-disable-next-line class-methods-use-this
+  createPath(/* ctx */) {
+    throw new Error("createPath(ctx) not implemented");
   }
 
-  move(dx, dy) {
-    throw "move(ctx) not implemented";
+  // eslint-disable-next-line class-methods-use-this
+  move(/* dx, dy */) {
+    throw new Error("move(dx, dy) not implemented");
+  }
+
+  draw(ctx) {
+    this.fill(ctx);
+    this.stroke(ctx);
   }
 
   fill(ctx) {

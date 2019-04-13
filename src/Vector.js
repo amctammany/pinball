@@ -1,3 +1,5 @@
+const isObject = o => o === Object(o);
+
 class Vector {
   constructor(v, y) {
     this.x = isObject(v) ? v.x : v;
@@ -11,6 +13,7 @@ class Vector {
   }
 
   getMagnitude() {
+    // eslint-disable-next-line no-mixed-operators
     return Math.sqrt(this.x ** 2 + this.y ** 2);
   }
 
@@ -68,18 +71,14 @@ class Vector {
   }
 
   reflect(axis) {
-    var dotProductRatio;
-    var vdotl;
-    var ldotl;
-    const v = new Vector();
-    var vdotl = this.dot(axis);
-    var ldotl = axis.dot(axis);
-    var dotProductRatio = vdotl / ldotl;
+    const vdotl = this.dot(axis);
+    const ldotl = axis.dot(axis);
+    const dotProductRatio = vdotl / ldotl;
 
-    v.x = 2 * dotProductRatio * axis.x - this.x;
-    v.y = 2 * dotProductRatio * axis.y - this.y;
-
-    return v;
+    return new Vector({
+      x: 2 * dotProductRatio * axis.x - this.x,
+      y: 2 * dotProductRatio * axis.y - this.y
+    });
   }
 }
 

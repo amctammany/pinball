@@ -17,7 +17,31 @@ const gameData = {
       width: 10,
       height: 10,
       fillStyle: "green"
-    }
+    },
+  {
+      type: "Rectangle",
+      x: 320,
+      y: 180,
+      width: 40,
+      height: 20,
+      fillStyle: "red"
+    },
+  {
+      type: "Rectangle",
+      x: 120,
+      y: 280,
+      width: 100,
+      height: 10,
+      fillStyle: "yellow"
+    },
+    {
+      type: 'Circle',
+      x: 100,
+      y: 230,
+      radius: 20,
+      fillStyle: 'blue',
+    },
+
 
     // {
     // type: "Rectangle",

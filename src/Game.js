@@ -1,4 +1,6 @@
 import Shapes from "./shapes";
+import Vector from "./Vector";
+import { checkMTVAxisDirection } from "./Collisions";
 
 class Game {
   constructor(canvas) {
@@ -7,36 +9,43 @@ class Game {
     this.height = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.renderFn = this.render.bind(this);
-    this.addEventListeners()
+    this.addEventListeners();
+    this.paused = false;
+
   }
 
   init({ bodies }) {
-    this.bodies = bodies.map(body => Shapes[body.type].create(body));
+    this.bodies = bodies.map(body => {
+      const b = Shapes[body.type].create(body);
+      b.velocity = Vector.random(-80, 80);
+
+      return b;
+    });
     // this.makeBorders();
     this.render();
   }
+
   addEventListeners() {
-    this.canvas.addEventListener('mousedown', ({offsetX: x, offsetY: y}) => {
-      const shapesUnderCursor = this.bodies.filter(b => b.isPointInPath(this.ctx, x, y))
-      console.log(shapesUnderCursor)
-      this.shapesMoving = shapesUnderCursor
-      this.dragging = {x, y}
-    })
-    this.canvas.addEventListener('mousemove', ({offsetX: x, offsetY: y}) => {
-      if (!this.dragging) return
+    this.canvas.addEventListener("mousedown", ({ offsetX: x, offsetY: y }) => {
+      const shapesUnderCursor = this.bodies.filter(b =>
+        b.isPointInPath(this.ctx, x, y)
+      );
+      this.shapesMoving = shapesUnderCursor;
+      this.dragging = { x, y };
+    });
+    this.canvas.addEventListener("mousemove", ({ offsetX: x, offsetY: y }) => {
+      if (!this.dragging) return;
       const dx = x - this.dragging.x;
-      const dy = y - this.dragging.y
-      console.log(dx, dy)
-      this.shapesMoving.forEach(s => s.move(dx, dy))
+      const dy = y - this.dragging.y;
+      this.shapesMoving.forEach(s => s.moveTo(x, y));
 
-      this.dragging = {x, y}
-    })
+      this.dragging = { x, y };
+    });
 
-    this.canvas.addEventListener('mouseup', e => {
+    this.canvas.addEventListener("mouseup", e => {
       this.dragging = false;
-      this.shapesMoving = null
-      console.log(e)
-    })
+      this.shapesMoving = null;
+    });
   }
 
   addBody(...bodies) {
@@ -47,42 +56,6 @@ class Game {
 
   addBodies(bodies) {
     this.bodies.push(...bodies);
-  }
-
-  makeBorders() {
-    const borderWidth = 10;
-    const { Rectangle } = Shapes;
-    this.borders = [
-      Rectangle.create({
-        x: 0,
-        y: 0,
-        width: this.width,
-        height: borderWidth,
-        fillStyle: "black"
-      }), // top
-      Rectangle.create({
-        x: 0,
-        y: 0,
-        width: borderWidth,
-        height: this.height,
-        fillStyle: "black"
-      }), // left
-      Rectangle.create({
-        x: 0,
-        y: this.height - borderWidth,
-        width: this.width,
-        height: borderWidth,
-        fillStyle: "black"
-      }), // bottom
-      Rectangle.create({
-        x: this.width - borderWidth,
-        y: 0,
-        width: borderWidth,
-        height: this.height,
-        fillStyle: "black"
-      }) // right
-    ];
-    this.addBodies(this.borders);
   }
 
   drawBorder() {
@@ -101,11 +74,27 @@ class Game {
     this.bodies.forEach(b1 => {
       this.bodies.forEach(b2 => {
         if (b1 === b2) return;
-        const mtv = b1.collidesWith(b2);
-        if (mtv.overlap > 0) {
-          console.log("collision");
-          console.log(b1);
-          console.log(b2);
+        const collision = b1.collidesWith(b2);
+        if (collision.axis || collision.overlap > 0) {
+        const mtv = checkMTVAxisDirection(collision, b1, b2);
+          const rV = b1.velocity.subtract(b2.velocity).dot(mtv.axis)
+          const vN = rV.normalize();
+          const vM = rV.getMagnitude();
+
+          const perpendicular = mtv.axis.perpendicular();
+            //? mtv.axis.perpendicular()
+            //: new Vector(vN.y * -1, vN.x);
+          console.log(perpendicular)
+          const vdotl = vN.dot(perpendicular);
+          const ldotl = perpendicular.dot(perpendicular);
+          const ratio = vdotl / ldotl;
+
+          const newV = new Vector(
+            2 * ratio * perpendicular.x - vN.x,
+            2 * ratio * perpendicular.y - vN.y
+          );
+          b1.velocity = newV.multiply(vM * -1.0);
+          b2.velocity = newV.multiply(vM * 1.0);
         }
       });
     });
@@ -117,12 +106,25 @@ class Game {
     });
   }
 
+  detectBoundaries(delta) {
+    this.bodies.forEach(body => {
+      const { x, y } = body.centroid();
+      if (x < 0 || x > this.width) body.velocity.x *= -1;
+      if (y < 0 || y > this.height) body.velocity.y *= -1;
+    });
+  }
+
   update(delta) {
+    this.detectBoundaries(delta);
     this.detectCollisions(delta);
     this.integrate(delta);
   }
 
+  toggle() {
+    this.paused = !this.paused;
+  }
   render() {
+    if (this.paused) return window.setTimeout(this.renderFn, 200)
     this.clear();
     this.update(0.01);
     // if (this.borders) this.drawBorder();

@@ -1,6 +1,15 @@
 const isObject = o => o === Object(o);
 
 export default class Vec2 {
+  static random(...range) {
+    const min = Math.min(...range);
+    const max = Math.max(...range);
+    return new this({
+      x: Math.random() * (max - min + 1) + min,
+      y: Math.random() * (max - min + 1) + min
+    });
+  }
+
   constructor(v = 0, y = 0) {
     this.x = isObject(v) ? v.x : v;
     this.y = isObject(v) ? v.y : y;

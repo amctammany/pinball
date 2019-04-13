@@ -1,9 +1,10 @@
 import Vector from "../Vector";
-import Shape, {
+import Shape from "../Shape";
+import {
   getPolygonPointClosestToPoint,
   polygonCollidesWithCircle,
   polygonCollidesWithPolygon
-} from "../Shape";
+} from "../Collisions";
 import Projection from "./Projection";
 
 class Polygon extends Shape {
@@ -19,7 +20,7 @@ class Polygon extends Shape {
 
   getAxes() {
     return this.points.map((p, i) =>
-      this.points[i + 1 === this.points.length ? 0 : i + 1].subtract(p).normal()
+      p.subtract(this.points[i + 1 === this.points.length ? 0 : i + 1]).normal()
     );
   }
 
@@ -49,8 +50,20 @@ class Polygon extends Shape {
     ctx.closePath();
   }
 
+  centroid() {
+    return this.points
+      .reduce((acc, pt) => acc.add(pt), new Vector())
+      .divide(this.points.length);
+  }
+
   move(dx, dy) {
     this.points = this.points.map(pt => pt.add(dx, dy));
+  }
+
+  moveTo(x, y) {
+    const dx = x - this.centroid().x;
+    const dy = y - this.centroid().y;
+    this.move(dx, dy);
   }
 }
 

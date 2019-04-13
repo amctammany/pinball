@@ -1,8 +1,9 @@
-import Shape, {
+import Shape from "../Shape";
+import {
   getPolygonPointClosestToPoint,
   polygonCollidesWithCircle,
   polygonCollidesWithPolygon
-} from "../Shape";
+} from "../Collisions";
 import Projection from "./Projection";
 import Vector from "../Vector";
 
@@ -13,6 +14,10 @@ class Circle extends Shape {
     this.x = props.x;
     this.y = props.y;
     this.radius = props.radius;
+  }
+
+  centroid() {
+    return this.position;
   }
 
   project(axis) {
@@ -32,8 +37,10 @@ class Circle extends Shape {
 
   move(dx, dy) {
     this.position = this.position.add(dx, dy);
-    // this.x += dx;
-    // this.y += dy;
+  }
+
+  moveTo(x, y) {
+    this.position = new Vector(x, y);
   }
 
   createPath(ctx) {

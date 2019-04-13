@@ -11,8 +11,18 @@ class Game {
 
   init({ bodies }) {
     this.bodies = bodies.map(body => Shapes[body.type].create(body));
-    this.makeBorders();
+    // this.makeBorders();
     this.render();
+  }
+
+  addBody(...bodies) {
+    bodies.forEach(body => {
+      this.bodies.push(Shapes[body.type].create(body));
+    });
+  }
+
+  addBodies(bodies) {
+    this.bodies.push(...bodies);
   }
 
   makeBorders() {
@@ -48,6 +58,7 @@ class Game {
         fillStyle: "black"
       }) // right
     ];
+    this.addBodies(this.borders);
   }
 
   drawBorder() {
@@ -62,9 +73,35 @@ class Game {
     this.bodies.forEach(body => body.draw(this.ctx));
   }
 
+  detectCollisions(delta) {
+    this.bodies.forEach(b1 => {
+      this.bodies.forEach(b2 => {
+        if (b1 === b2) return;
+        const mtv = b1.collidesWith(b2);
+        if (mtv.overlap > 0) {
+          console.log("collision");
+          console.log(b1);
+          console.log(b2);
+        }
+      });
+    });
+  }
+
+  integrate(delta) {
+    this.bodies.forEach(body => {
+      body.update(delta);
+    });
+  }
+
+  update(delta) {
+    this.detectCollisions(delta);
+    this.integrate(delta);
+  }
+
   render() {
     this.clear();
-    if (this.borders) this.drawBorder();
+    this.update(0.01);
+    // if (this.borders) this.drawBorder();
     if (this.bodies) this.drawBodies();
 
     this.animFrame = window.requestAnimationFrame(this.renderFn);

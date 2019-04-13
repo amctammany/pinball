@@ -1,4 +1,10 @@
-import Shape from "../Shape";
+import Shape, {
+  getPolygonPointClosestToPoint,
+  polygonCollidesWithCircle,
+  polygonCollidesWithPolygon
+} from "../Shape";
+import Projection from "./Projection";
+import Vector from "../Vector";
 
 class Circle extends Shape {
   constructor(props) {
@@ -9,14 +15,37 @@ class Circle extends Shape {
     this.radius = props.radius;
   }
 
+  project(axis) {
+    const dot = this.position.dot(axis);
+    const scalars = [dot, dot + this.radius, dot - this.radius];
+    return Projection.create({
+      min: Math.min(...scalars),
+      max: Math.max(...scalars)
+    });
+  }
+
+  collidesWith(other, displacement) {
+    return other.radius === undefined
+      ? polygonCollidesWithCircle(other, this, displacement)
+      : circleCollidesWithCircle(this, other, displacement);
+  }
+
   move(dx, dy) {
-    this.x += dx;
-    this.y += dy;
+    this.position = this.position.add(dx, dy);
+    // this.x += dx;
+    // this.y += dy;
   }
 
   createPath(ctx) {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+    ctx.arc(
+      this.position.x,
+      this.position.y,
+      this.radius,
+      0,
+      Math.PI * 2,
+      false
+    );
   }
 }
 

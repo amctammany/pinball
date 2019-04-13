@@ -1,14 +1,40 @@
-import Shape from "../Shape";
+import Vector from "../Vector";
+import Shape, {
+  getPolygonPointClosestToPoint,
+  polygonCollidesWithCircle,
+  polygonCollidesWithPolygon
+} from "../Shape";
+import Projection from "./Projection";
 
 class Polygon extends Shape {
   constructor(props) {
     super(props);
 
-    this.points = props.points;
+    this.points = props.points.map(p => new Vector(p));
   }
 
   addPoint({ x, y }) {
-    this.points.push({ x, y });
+    this.points.push(new Vector({ x, y }));
+  }
+
+  getAxes() {
+    return this.points.map((p, i) =>
+      this.points[i + 1 === this.points.length ? 0 : i + 1].subtract(p).normal()
+    );
+  }
+
+  project(axis) {
+    const scalars = this.points.map(p => p.dot(axis));
+    return Projection.create({
+      min: Math.min(...scalars),
+      max: Math.max(...scalars)
+    });
+  }
+
+  collidesWith(other) {
+    return other.radius === undefined
+      ? polygonCollidesWithPolygon(this, other)
+      : polygonCollidesWithCircle(this, other);
   }
 
   createPath(ctx) {
@@ -24,7 +50,7 @@ class Polygon extends Shape {
   }
 
   move(dx, dy) {
-    this.points = this.points.map(pt => pt.move(dx, dy));
+    this.points = this.points.map(pt => pt.add(dx, dy));
   }
 }
 

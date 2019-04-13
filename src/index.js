@@ -4,19 +4,36 @@ const gameData = {
   bodies: [
     {
       type: "Rectangle",
-      x: 100,
-      y: 50,
+      x: 110,
+      y: 90,
       width: 40,
       height: 50,
       fillStyle: "green"
     },
     {
-      type: "Circle",
-      x: 50,
+      type: "Rectangle",
+      x: 220,
       y: 80,
-      radius: 10,
-      fillStyle: "blue"
+      width: 10,
+      height: 10,
+      fillStyle: "green"
     }
+
+    // {
+    // type: "Rectangle",
+    // x: 100,
+    // y: 50,
+    // width: 40,
+    // height: 50,
+    // fillStyle: "green"
+    // },
+    // {
+    // type: "Circle",
+    // x: 50,
+    // y: 80,
+    // radius: 10,
+    // fillStyle: "blue"
+    // }
   ]
 };
 

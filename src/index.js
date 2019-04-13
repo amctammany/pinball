@@ -10,30 +10,30 @@ const gameData = {
       height: 50,
       fillStyle: "green"
     },
-    {
-      type: "Rectangle",
-      x: 220,
-      y: 80,
-      width: 10,
-      height: 10,
-      fillStyle: "green"
-    },
-  {
-      type: "Rectangle",
-      x: 320,
-      y: 180,
-      width: 40,
-      height: 20,
-      fillStyle: "red"
-    },
-  {
-      type: "Rectangle",
-      x: 120,
-      y: 280,
-      width: 100,
-      height: 10,
-      fillStyle: "yellow"
-    },
+    //{
+      //type: "Rectangle",
+      //x: 220,
+      //y: 80,
+      //width: 10,
+      //height: 10,
+      //fillStyle: "green"
+    //},
+  //{
+      //type: "Rectangle",
+      //x: 320,
+      //y: 180,
+      //width: 40,
+      //height: 20,
+      //fillStyle: "red"
+    //},
+  //{
+      //type: "Rectangle",
+      //x: 120,
+      //y: 280,
+      //width: 100,
+      //height: 10,
+      //fillStyle: "yellow"
+    //},
     {
       type: 'Circle',
       x: 100,

@@ -48,8 +48,8 @@ export function polygonCollidesWithCircle(polygon, circle) {
   const closest = getPolygonPointClosestToPoint(polygon, circle.position);
   const axes = polygon.getAxes();
   axes.push(circle.position.subtract(closest).normalize());
-  console.log(axes)
-  return !polygon.seperationOnAxes(axes, circle);
+  return getMTV(polygon, circle, 0, axes)
+  //return !polygon.seperationOnAxes(axes, circle);
 }
 
 export function checkProjectionOverlap(p1, p2) {

@@ -77,9 +77,8 @@ class Game {
         const collision = b1.collidesWith(b2);
         if (collision.axis || collision.overlap > 0) {
         const mtv = checkMTVAxisDirection(collision, b1, b2);
-          const rV = b1.velocity.subtract(b2.velocity).dot(mtv.axis)
-          const vN = rV.normalize();
-          const vM = rV.getMagnitude();
+          const vN = b1.velocity.normalize();
+          const vM = b1.velocity.getMagnitude();
 
           const perpendicular = mtv.axis.perpendicular();
             //? mtv.axis.perpendicular()

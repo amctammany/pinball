@@ -1,21 +1,12 @@
-class Person {
-  constructor({ name, age }) {
-    this.name = name;
-    this.age = age;
-  }
+import Game from "./Game";
 
-  getData() {
-    return `${this.name} & ${this.age}`;
-  }
-}
+const gameData = {};
 
-const personData = { name: "Alex", age: "30ish" };
-window.onload = () => {
-  const p = new Person(personData);
-  const node = document.createElement("b");
-  node.innerHTML = p.getData();
+const canvas = document.getElementById("canvas");
 
-  window.setTimeout(() => document.body.appendChild(node), 1000);
-};
+const game = new Game(canvas);
+game.init(gameData);
 
-export default Person;
+window.game = game;
+
+export default game;

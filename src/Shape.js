@@ -12,6 +12,7 @@ class Shape {
     strokeStyle = "black",
     position,
     velocity,
+    mass = 1,
     acceleration
   }) {
     this.fillStyle = fillStyle;
@@ -19,6 +20,8 @@ class Shape {
     this.position = new Vector(x, y);
     this.velocity = new Vector(velocity);
     this.acceleration = new Vector(acceleration);
+    this.mass = mass;
+    this.invMass = mass ? 1 / mass : 0;
   }
 
   isPointInPath(ctx, x, y) {

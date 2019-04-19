@@ -1,6 +1,6 @@
 import Shapes from "./shapes";
 import Vector from "./Vector";
-import { checkMTVAxisDirection } from "./Collisions";
+import { checkMTVAxisDirection, resolveCollision } from "./Collisions";
 
 class Game {
   constructor(canvas) {
@@ -17,7 +17,7 @@ class Game {
   init({ bodies }) {
     this.bodies = bodies.map(body => {
       const b = Shapes[body.type].create(body);
-      b.velocity = Vector.random(-80, 80);
+      b.velocity = Vector.random(-480, 480);
 
       return b;
     });
@@ -77,13 +77,13 @@ class Game {
         const collision = b1.collidesWith(b2);
         if (collision.axis || collision.overlap > 0) {
         const mtv = checkMTVAxisDirection(collision, b1, b2);
+          return resolveCollision(mtv, b1, b2)
           const vN = b1.velocity.normalize();
           const vM = b1.velocity.getMagnitude();
 
           const perpendicular = mtv.axis.perpendicular();
             //? mtv.axis.perpendicular()
             //: new Vector(vN.y * -1, vN.x);
-          console.log(perpendicular)
           const vdotl = vN.dot(perpendicular);
           const ldotl = perpendicular.dot(perpendicular);
           const ratio = vdotl / ldotl;

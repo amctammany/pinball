@@ -10,7 +10,7 @@ class Polygon extends Shape {
   constructor(props) {
     super(props);
 
-    this.points = props.points.map(p => new Vector(p));
+    this.points = props.points.map(([x, y]) => new Vector(x, y));
   }
 
   addPoint({ x, y }) {

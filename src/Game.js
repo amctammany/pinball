@@ -20,7 +20,7 @@ class Game {
   init({ bodies, buttons, outputs, inputs }) {
     this.bodies = bodies.map(body => {
       const b = Shapes[body.type].create(body);
-      b.velocity = Vector.random(-180, 180);
+      //b.velocity = Vector.random(-180, 180);
 
       return b;
     });

@@ -1,6 +1,9 @@
 import Game from "./Game";
 
 const gameData = {
+  keyListeners: {
+    P: (game, event) => game.toggle()
+  },
   bodyTypes: [
     {
       type: "bumper-100",
@@ -28,7 +31,13 @@ const gameData = {
       radius: 7,
       fillStyle: "gray",
       strokeStyle: "black",
-      strokeWidth: 10
+      strokeWidth: 10,
+      mass: 1,
+      keyListeners: {
+        A: source => (game, event) => {
+          source.velocity = source.velocity.multiply(-1);
+        }
+      }
     }
   ],
   dome: {

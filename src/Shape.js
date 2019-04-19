@@ -16,8 +16,9 @@ class Shape {
     vy = 0,
     ax = 0,
     ay = 0,
-    mass = 1,
-    acceleration
+    mass = 0,
+    acceleration,
+    keyListeners
   }) {
     this.type = type;
     this.fillStyle = fillStyle;
@@ -27,6 +28,15 @@ class Shape {
     this.acceleration = new Vector(ax, ay);
     this.mass = mass;
     this.invMass = mass ? 1 / mass : 0;
+    if (keyListeners) {
+      this.keyListeners = Object.entries(keyListeners).reduce(
+        (acc, [key, cb]) => {
+          acc[key] = src => cb(src);
+          return acc;
+        },
+        {}
+      );
+    }
   }
 
   isPointInPath(ctx, x, y) {

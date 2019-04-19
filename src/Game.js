@@ -10,15 +10,17 @@ class Game {
     this.height = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.renderFn = this.render.bind(this);
-    this.addEventListeners();
+    // this.addEventListeners();
     this.paused = false;
+    this.keyListeners = {};
 
     this.state = {};
     this.outputs = {};
   }
 
-  init({ bodies, buttons, outputs, inputs, bodyTypes, dome }) {
+  init({ bodies, buttons, outputs, inputs, bodyTypes, dome, keyListeners }) {
     this.addBodyTypes(bodyTypes);
+    this.keyListeners = this.addKeyListeners(keyListeners);
     this.interactionCache = bodyTypes.reduce((acc, bt) => {
       acc[bt.type] = bt.collisionHandlers || {};
       return acc;
@@ -38,8 +40,21 @@ class Game {
     );
 
     if (dome) this.addBodies(Shapes.createDomePolygons(dome));
-    // this.makeBorders();
     this.render();
+
+    document.body.addEventListener("keypress", e => {
+      const listeners = this.keyListeners[e.key.toUpperCase()];
+      if (listeners) listeners.forEach(l => l(this, e));
+    });
+  }
+
+  addKeyListeners(keyListeners = {}, bound) {
+    return Object.entries(keyListeners).reduce((acc, [k, v]) => {
+      const f = bound ? v(bound) : v;
+      const upperK = k.toUpperCase();
+      acc[upperK] = !acc.hasOwnProperty(upperK) ? [f] : [...acc[upperK], f];
+      return acc;
+    }, this.keyListeners);
   }
 
   registerOutput(elementId, stateKey, defaultValue) {
@@ -100,15 +115,18 @@ class Game {
 
   addBodyTypes(bodyTypes) {
     this.bodyTypes = bodyTypes.reduce((acc, bt) => {
-      acc[bt.type] = props => Shapes[bt.parent].create({ ...props, ...bt });
+      acc[bt.type] = props => Shapes[bt.parent].create({ ...bt, ...props });
       return acc;
     }, {});
   }
 
   createBody(body) {
-    return this.bodyTypes.hasOwnProperty(body.type)
+    const o = this.bodyTypes.hasOwnProperty(body.type)
       ? this.bodyTypes[body.type](body)
       : Shapes[body.type].create(body);
+    if (o.hasOwnProperty("keyListeners"))
+      this.addKeyListeners(o.keyListeners, o);
+    return o;
   }
 
   addBody(...bodies) {
@@ -119,10 +137,6 @@ class Game {
 
   addBodies(bodies) {
     this.bodies.push(...bodies);
-  }
-
-  drawBorder() {
-    this.borders.forEach(border => border.draw(this.ctx));
   }
 
   clear() {

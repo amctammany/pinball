@@ -8,18 +8,23 @@ class Shape {
   constructor({
     x = 0,
     y = 0,
+    type = "Shape",
     fillStyle = "red",
     strokeStyle = "black",
     position,
-    velocity,
+    vx = 0,
+    vy = 0,
+    ax = 0,
+    ay = 0,
     mass = 1,
     acceleration
   }) {
+    this.type = type;
     this.fillStyle = fillStyle;
     this.strokeStyle = strokeStyle;
     this.position = new Vector(x, y);
-    this.velocity = new Vector(velocity);
-    this.acceleration = new Vector(acceleration);
+    this.velocity = new Vector(vx, vy);
+    this.acceleration = new Vector(ax, ay);
     this.mass = mass;
     this.invMass = mass ? 1 / mass : 0;
   }

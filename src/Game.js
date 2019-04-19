@@ -19,6 +19,10 @@ class Game {
 
   init({ bodies, buttons, outputs, inputs, bodyTypes, dome }) {
     this.addBodyTypes(bodyTypes);
+    this.interactionCache = bodyTypes.reduce((acc, bt) => {
+      acc[bt.type] = bt.collisionHandlers || {};
+      return acc;
+    }, {});
     this.bodies = bodies.map(body => {
       const b = this.createBody(body);
       // b.velocity = Vector.random(-180, 180);
@@ -131,19 +135,21 @@ class Game {
 
   detectCollisions(/* delta */) {
     this.bodies.forEach(b1 => {
+      const cache = this.interactionCache[b1.type] || {};
       this.bodies.forEach(b2 => {
         if (b1 === b2) return;
         const collision = b1.collidesWith(b2);
         if (collision.axis || collision.overlap > 0) {
           const mtv = checkMTVAxisDirection(collision, b1, b2);
           resolveCollision(mtv, b1, b2);
-          this.changeState(
-            "score",
-            this.bodies.reduce(
-              (acc, b) => acc + b.velocity.getMagnitude() * b.mass,
-              0
-            )
-          );
+          if (cache[b2.type]) {
+            const r = cache[b2.type](this, b1, b2);
+          } else if (
+            !!this.interactionCache[b2.type] &&
+            !!this.interactionCache[b2.type][b1.type]
+          ) {
+            const r = this.interactionCache[b2.type][b1.type](this, b2, b1);
+          }
         }
       });
     });
@@ -156,7 +162,6 @@ class Game {
   }
 
   detectBoundaries() {
-    console.log(this.bodies);
     this.bodies.forEach(body => {
       const { x, y } = body.centroid();
       if (x < 0 || x > this.width) body.velocity.x *= -1;

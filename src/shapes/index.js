@@ -45,7 +45,7 @@ function createDomePolygons({ x, y, radius, sides }) {
       x + radius * Math.cos(startTheta),
       y - radius * Math.sin(startTheta)
     ]);
-    return new Polygon({ points });
+    return new Polygon({ points, mass: 0 });
   });
   return polygons;
 }

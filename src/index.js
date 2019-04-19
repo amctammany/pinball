@@ -8,7 +8,11 @@ const gameData = {
       radius: 10,
       fillStyle: "yellow",
       strokeStyle: "red",
-      strokeWidth: 3
+      strokeWidth: 3,
+      collisionHandlers: {
+        ball: (game, root, other) =>
+          game.changeState("score", score => score + 10)
+      }
     },
     {
       type: "flipper",
@@ -17,6 +21,14 @@ const gameData = {
       height: 16,
       fillStyle: "red",
       strokeStyle: "blue"
+    },
+    {
+      type: "ball",
+      parent: "Circle",
+      radius: 7,
+      fillStyle: "gray",
+      strokeStyle: "black",
+      strokeWidth: 10
     }
   ],
   dome: {
@@ -26,10 +38,17 @@ const gameData = {
     sides: 20
   },
   bodies: [
-    { type: "bumper-100", x: 75, y: 60 },
-    { type: "bumper-100", x: 150, y: 30 },
-    { type: "bumper-100", x: 225, y: 60 },
-    { type: "bumper-100", x: 150, y: 90 },
+    {
+      type: "ball",
+      x: 250,
+      y: 550,
+      vx: 0,
+      vy: -200
+    },
+    { type: "bumper-100", x: 75, y: 110 },
+    { type: "bumper-100", x: 150, y: 60 },
+    { type: "bumper-100", x: 225, y: 110 },
+    { type: "bumper-100", x: 150, y: 160 },
     { type: "flipper", x: 150, y: 480 },
     { type: "flipper", x: 50, y: 480 },
 

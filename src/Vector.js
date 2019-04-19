@@ -1,4 +1,4 @@
-const isObject = o => o === Object(o);
+import { isObject } from "./utility";
 
 export default class Vec2 {
   static random(...range) {

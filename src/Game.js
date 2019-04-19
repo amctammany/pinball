@@ -1,6 +1,7 @@
 import Shapes from "./shapes";
 import Vector from "./Vector";
 import { checkMTVAxisDirection, resolveCollision } from "./Collisions";
+import { isFunction } from "./utility";
 
 class Game {
   constructor(canvas) {
@@ -11,6 +12,9 @@ class Game {
     this.renderFn = this.render.bind(this);
     this.addEventListeners();
     this.paused = false;
+
+    this.state = {};
+    this.outputs = {};
   }
 
   init({ bodies }) {
@@ -22,6 +26,25 @@ class Game {
     });
     // this.makeBorders();
     this.render();
+  }
+
+  registerOutput(elementId, stateKey, defaultValue) {
+    this.outputs[stateKey] = elementId;
+  }
+
+  updateOutput(elementId, value) {
+    const node = document.getElementById(elementId);
+
+    node.innerHTML = value;
+  }
+
+  changeState(key, value) {
+    if (isFunction(key)) {
+    }
+
+    this.state[key] = value;
+
+    this.updateOutput(this.outputs[key], value);
   }
 
   addEventListeners() {
@@ -77,23 +100,13 @@ class Game {
         if (collision.axis || collision.overlap > 0) {
           const mtv = checkMTVAxisDirection(collision, b1, b2);
           resolveCollision(mtv, b1, b2);
-
-          // const vN = b1.velocity.normalize();
-          // const vM = b1.velocity.getMagnitude();
-
-          // const perpendicular = mtv.axis.perpendicular();
-          // // ? mtv.axis.perpendicular()
-          // // : new Vector(vN.y * -1, vN.x);
-          // const vdotl = vN.dot(perpendicular);
-          // const ldotl = perpendicular.dot(perpendicular);
-          // const ratio = vdotl / ldotl;
-
-          // const newV = new Vector(
-          // 2 * ratio * perpendicular.x - vN.x,
-          // 2 * ratio * perpendicular.y - vN.y
-          // );
-          // b1.velocity = newV.multiply(vM * -1.0);
-          // b2.velocity = newV.multiply(vM * 1.0);
+          this.changeState(
+            "score",
+            this.bodies.reduce(
+              (acc, b) => acc + b.velocity.getMagnitude() * b.mass,
+              0
+            )
+          );
         }
       });
     });

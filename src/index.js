@@ -53,6 +53,8 @@ const canvas = document.getElementById("canvas");
 const game = new Game(canvas);
 game.init(gameData);
 
+game.registerOutput("scoreLabel", "score", 0);
+
 window.game = game;
 
 export default game;

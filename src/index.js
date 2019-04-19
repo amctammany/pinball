@@ -55,7 +55,16 @@ const gameData = {
       vy: -200
     },
     { type: "bumper-100", x: 75, y: 110 },
-    { type: "bumper-100", x: 150, y: 60 },
+    {
+      type: "bumper-100",
+      x: 150,
+      y: 60,
+      keyListeners: {
+        S: source => (game, event) => {
+          source.move(-10, 0);
+        }
+      }
+    },
     { type: "bumper-100", x: 225, y: 110 },
     { type: "bumper-100", x: 150, y: 160 },
     { type: "flipper", x: 150, y: 480 },

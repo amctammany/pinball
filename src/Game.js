@@ -17,9 +17,10 @@ class Game {
     this.outputs = {};
   }
 
-  init({ bodies, buttons, outputs, inputs }) {
+  init({ bodies, buttons, outputs, inputs, bodyTypes, }) {
+    this.addBodyTypes(bodyTypes)
     this.bodies = bodies.map(body => {
-      const b = Shapes[body.type].create(body);
+      const b = this.createBody(body)
       //b.velocity = Vector.random(-180, 180);
 
       return b;
@@ -91,9 +92,22 @@ class Game {
     });
   }
 
+  addBodyTypes(bodyTypes) {
+    this.bodyTypes = bodyTypes.reduce((acc, bt) => {
+      acc[bt.type] = (props) => {
+        return Shapes[bt.parent].create({...props, ...bt})
+      }
+      return acc
+    }, {})
+  }
+  createBody(body) {
+    return this.bodyTypes.hasOwnProperty(body.type) ?
+      this.bodyTypes[body.type](body) :
+      Shapes[body.type].create(body)
+  }
   addBody(...bodies) {
     bodies.forEach(body => {
-      this.bodies.push(Shapes[body.type].create(body));
+      this.bodies.push(this.createBody(body));
     });
   }
 

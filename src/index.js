@@ -53,6 +53,7 @@ const canvas = document.getElementById("canvas");
 const game = new Game(canvas);
 game.init(gameData);
 
+game.registerButton("toggleButton", game => game.toggle());
 game.registerInput("deltaInput", "delta", 1);
 game.registerOutput("scoreLabel", "score", 0);
 game.registerOutput("deltaLabel", "delta", 0);

@@ -31,10 +31,19 @@ class Game {
   registerOutput(elementId, stateKey, defaultValue) {
     this.outputs[stateKey] = elementId;
   }
-  registerInput(elementId, stateKey, defaultValue) {
-    const node = document.getElementById(elementId)
 
-    node.addEventListener('input', ({target: {value}}) => this.changeState(stateKey, value))
+  registerButton(elementId, cb) {
+    const node = document.getElementById(elementId);
+
+    node.addEventListener("click", e => cb(game));
+  }
+
+  registerInput(elementId, stateKey, defaultValue) {
+    const node = document.getElementById(elementId);
+
+    node.addEventListener("input", ({ target: { value } }) =>
+      this.changeState(stateKey, value)
+    );
   }
 
   updateOutput(elementId, value) {
@@ -49,8 +58,7 @@ class Game {
 
     this.state[key] = value;
 
-    if (this.outputs[key])
-      this.updateOutput(this.outputs[key], value);
+    if (this.outputs[key]) this.updateOutput(this.outputs[key], value);
   }
 
   addEventListeners() {

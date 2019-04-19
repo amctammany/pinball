@@ -98,8 +98,8 @@ export function resolveCollision(mtv, b1, b2) {
           .subtract(b2.getPosition())
           .normalize();
 
-  //if (b1.invMass) separate(b1, axis, mtv.overlap);
-  //if (b2.invMass) separate(b2, axis, mtv.overlap);
+  // if (b1.invMass) separate(b1, axis, mtv.overlap);
+  // if (b2.invMass) separate(b2, axis, mtv.overlap);
 
   const relativeVelocity = b2.velocity.subtract(b1.velocity); // .normalize()
   const velocityAlongNormal = relativeVelocity.dot(axis);

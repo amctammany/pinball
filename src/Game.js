@@ -17,11 +17,11 @@ class Game {
     this.outputs = {};
   }
 
-  init({ bodies, buttons, outputs, inputs, bodyTypes, }) {
-    this.addBodyTypes(bodyTypes)
+  init({ bodies, buttons, outputs, inputs, bodyTypes, dome }) {
+    this.addBodyTypes(bodyTypes);
     this.bodies = bodies.map(body => {
-      const b = this.createBody(body)
-      //b.velocity = Vector.random(-180, 180);
+      const b = this.createBody(body);
+      // b.velocity = Vector.random(-180, 180);
 
       return b;
     });
@@ -32,6 +32,8 @@ class Game {
     outputs.forEach(({ elementId, stateKey, defaultValue }) =>
       this.registerOutput(elementId, stateKey, defaultValue)
     );
+
+    if (dome) this.addBodies(Shapes.createDomePolygons(dome));
     // this.makeBorders();
     this.render();
   }
@@ -94,17 +96,17 @@ class Game {
 
   addBodyTypes(bodyTypes) {
     this.bodyTypes = bodyTypes.reduce((acc, bt) => {
-      acc[bt.type] = (props) => {
-        return Shapes[bt.parent].create({...props, ...bt})
-      }
-      return acc
-    }, {})
+      acc[bt.type] = props => Shapes[bt.parent].create({ ...props, ...bt });
+      return acc;
+    }, {});
   }
+
   createBody(body) {
-    return this.bodyTypes.hasOwnProperty(body.type) ?
-      this.bodyTypes[body.type](body) :
-      Shapes[body.type].create(body)
+    return this.bodyTypes.hasOwnProperty(body.type)
+      ? this.bodyTypes[body.type](body)
+      : Shapes[body.type].create(body);
   }
+
   addBody(...bodies) {
     bodies.forEach(body => {
       this.bodies.push(this.createBody(body));
@@ -154,6 +156,7 @@ class Game {
   }
 
   detectBoundaries() {
+    console.log(this.bodies);
     this.bodies.forEach(body => {
       const { x, y } = body.centroid();
       if (x < 0 || x > this.width) body.velocity.x *= -1;

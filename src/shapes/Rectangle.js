@@ -4,10 +4,10 @@ class Rectangle extends Polygon {
   constructor(props) {
     const { x, y, width, height } = props;
     const points = [
-      { x, y },
-      { x: x + width, y },
-      { x: x + width, y: y + height },
-      { x, y: y + height }
+      [x, y],
+      [x + width, y],
+      [x + width, y + height],
+      [x, y + height]
     ];
     super({ ...props, points });
   }

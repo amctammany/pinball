@@ -17,7 +17,10 @@ class Circle extends Shape {
   centroid() {
     return this.position;
   }
-  getPosition() { return this.position }
+
+  getPosition() {
+    return this.position;
+  }
 
   project(axis) {
     const dot = this.position.dot(axis);

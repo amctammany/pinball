@@ -1,5 +1,3 @@
 export default {
-  bodies: [
-
-  ],
-}
+  bodies: []
+};

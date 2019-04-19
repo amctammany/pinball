@@ -11,13 +11,12 @@ class Game {
     this.renderFn = this.render.bind(this);
     this.addEventListeners();
     this.paused = false;
-
   }
 
   init({ bodies }) {
     this.bodies = bodies.map(body => {
       const b = Shapes[body.type].create(body);
-      b.velocity = Vector.random(-480, 480);
+      b.velocity = Vector.random(-180, 180);
 
       return b;
     });
@@ -35,14 +34,14 @@ class Game {
     });
     this.canvas.addEventListener("mousemove", ({ offsetX: x, offsetY: y }) => {
       if (!this.dragging) return;
-      const dx = x - this.dragging.x;
-      const dy = y - this.dragging.y;
+      // const dx = x - this.dragging.x;
+      // const dy = y - this.dragging.y;
       this.shapesMoving.forEach(s => s.moveTo(x, y));
 
       this.dragging = { x, y };
     });
 
-    this.canvas.addEventListener("mouseup", e => {
+    this.canvas.addEventListener("mouseup", () => {
       this.dragging = false;
       this.shapesMoving = null;
     });
@@ -70,30 +69,31 @@ class Game {
     this.bodies.forEach(body => body.draw(this.ctx));
   }
 
-  detectCollisions(delta) {
+  detectCollisions(/* delta */) {
     this.bodies.forEach(b1 => {
       this.bodies.forEach(b2 => {
         if (b1 === b2) return;
         const collision = b1.collidesWith(b2);
         if (collision.axis || collision.overlap > 0) {
-        const mtv = checkMTVAxisDirection(collision, b1, b2);
-          return resolveCollision(mtv, b1, b2)
-          const vN = b1.velocity.normalize();
-          const vM = b1.velocity.getMagnitude();
+          const mtv = checkMTVAxisDirection(collision, b1, b2);
+          resolveCollision(mtv, b1, b2);
 
-          const perpendicular = mtv.axis.perpendicular();
-            //? mtv.axis.perpendicular()
-            //: new Vector(vN.y * -1, vN.x);
-          const vdotl = vN.dot(perpendicular);
-          const ldotl = perpendicular.dot(perpendicular);
-          const ratio = vdotl / ldotl;
+          // const vN = b1.velocity.normalize();
+          // const vM = b1.velocity.getMagnitude();
 
-          const newV = new Vector(
-            2 * ratio * perpendicular.x - vN.x,
-            2 * ratio * perpendicular.y - vN.y
-          );
-          b1.velocity = newV.multiply(vM * -1.0);
-          b2.velocity = newV.multiply(vM * 1.0);
+          // const perpendicular = mtv.axis.perpendicular();
+          // // ? mtv.axis.perpendicular()
+          // // : new Vector(vN.y * -1, vN.x);
+          // const vdotl = vN.dot(perpendicular);
+          // const ldotl = perpendicular.dot(perpendicular);
+          // const ratio = vdotl / ldotl;
+
+          // const newV = new Vector(
+          // 2 * ratio * perpendicular.x - vN.x,
+          // 2 * ratio * perpendicular.y - vN.y
+          // );
+          // b1.velocity = newV.multiply(vM * -1.0);
+          // b2.velocity = newV.multiply(vM * 1.0);
         }
       });
     });
@@ -105,7 +105,7 @@ class Game {
     });
   }
 
-  detectBoundaries(delta) {
+  detectBoundaries() {
     this.bodies.forEach(body => {
       const { x, y } = body.centroid();
       if (x < 0 || x > this.width) body.velocity.x *= -1;
@@ -122,8 +122,9 @@ class Game {
   toggle() {
     this.paused = !this.paused;
   }
+
   render() {
-    if (this.paused) return window.setTimeout(this.renderFn, 200)
+    if (this.paused) return window.setTimeout(this.renderFn, 200);
     this.clear();
     this.update(0.01);
     // if (this.borders) this.drawBorder();

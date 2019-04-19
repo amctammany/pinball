@@ -34,12 +34,11 @@ class Shape {
       const projection1 = pt.project(axis);
       const projection2 = this.project(axis);
       const overlap = projection1.getOverlap(projection2);
-      console.log(overlap)
       return overlap ? acc : true;
     }, false);
   }
 
-  update(delta, game) {
+  update(delta /* game */) {
     const { x, y } = this.velocity.multiply(delta);
     this.move(x, y);
     this.velocity = this.velocity.add(this.acceleration.multiply(delta));

@@ -1,9 +1,9 @@
 import Shape from "../Shape";
 import {
-  getPolygonPointClosestToPoint,
-  polygonCollidesWithCircle,
-  polygonCollidesWithPolygon
+  circleCollidesWithCircle,
+  polygonCollidesWithCircle
 } from "../Collisions";
+
 import Projection from "./Projection";
 import Vector from "../Vector";
 

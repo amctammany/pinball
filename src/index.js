@@ -45,6 +45,12 @@ const gameData = {
       fillStyle: "blue",
       mass: 20
     }
+  ],
+  buttons: [{ elementId: "toggleButton", cb: game => game.toggle() }],
+  inputs: [{ elementId: "deltaInput", stateKey: "delta", defaultValue: 1 }],
+  outputs: [
+    { elementId: "deltaLabel", stateKey: "delta", defaultValue: 1 },
+    { elementId: "scoreLabel", stateKey: "score", defaultValue: 0 }
   ]
 };
 
@@ -52,11 +58,6 @@ const canvas = document.getElementById("canvas");
 
 const game = new Game(canvas);
 game.init(gameData);
-
-game.registerButton("toggleButton", game => game.toggle());
-game.registerInput("deltaInput", "delta", 1);
-game.registerOutput("scoreLabel", "score", 0);
-game.registerOutput("deltaLabel", "delta", 0);
 
 window.game = game;
 

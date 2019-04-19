@@ -17,13 +17,20 @@ class Game {
     this.outputs = {};
   }
 
-  init({ bodies }) {
+  init({ bodies, buttons, outputs, inputs }) {
     this.bodies = bodies.map(body => {
       const b = Shapes[body.type].create(body);
       b.velocity = Vector.random(-180, 180);
 
       return b;
     });
+    buttons.forEach(({ elementId, cb }) => this.registerButton(elementId, cb));
+    inputs.forEach(({ elementId, stateKey, defaultValue }) =>
+      this.registerInput(elementId, stateKey, defaultValue)
+    );
+    outputs.forEach(({ elementId, stateKey, defaultValue }) =>
+      this.registerOutput(elementId, stateKey, defaultValue)
+    );
     // this.makeBorders();
     this.render();
   }

@@ -15,7 +15,13 @@ const gameData = {
       collisionHandlers: {
         ball: (game, root, other) =>
           game.changeState("score", score => score + 10)
+      },
+      keyListeners: {
+        S: source => (game, event) => {
+          source.move(-10, 0);
+        }
       }
+
     },
     {
       type: "flipper",
@@ -33,11 +39,6 @@ const gameData = {
       strokeStyle: "black",
       strokeWidth: 10,
       mass: 1,
-      keyListeners: {
-        A: source => (game, event) => {
-          source.velocity = source.velocity.multiply(-1);
-        }
-      }
     }
   ],
   dome: {
@@ -52,18 +53,19 @@ const gameData = {
       x: 250,
       y: 550,
       vx: 0,
-      vy: -200
+      vy: -200,
+      keyListeners: {
+        A: source => (game, event) => {
+          source.velocity = source.velocity.multiply(-1);
+        }
+      }
+
     },
     { type: "bumper-100", x: 75, y: 110 },
     {
       type: "bumper-100",
       x: 150,
       y: 60,
-      keyListeners: {
-        S: source => (game, event) => {
-          source.move(-10, 0);
-        }
-      }
     },
     { type: "bumper-100", x: 225, y: 110 },
     { type: "bumper-100", x: 150, y: 160 },

@@ -4,6 +4,41 @@ const gameData = {
   keyListeners: {
     P: (game, event) => game.toggle()
   },
+  animations: {
+    RiseLeftFlipper: {
+      bodies: ["LeftFlipper"],
+      duration: 18,
+      method(source, step) {
+        const dA = Math.PI / -12 / this.duration;
+        source.rotate(source.pivot, dA * step);
+      }
+    },
+    RiseRightFlipper: {
+      bodies: ["RightFlipper"],
+      duration: 18,
+      method(source, step) {
+        const dA = Math.PI / 18 / this.duration;
+        source.rotate(source.pivot, dA * step);
+      }
+    },
+    FallLeftFlipper: {
+      bodies: ["LeftFlipper"],
+      duration: 8,
+      method(source, step) {
+        const dA = Math.PI / 8 / this.duration;
+        source.rotate(source.pivot, dA * step);
+      }
+    },
+    FallRightFlipper: {
+      bodies: ["RightFlipper"],
+      duration: 8,
+      method(source, step) {
+        const dA = Math.PI / -8 / this.duration;
+        console.log(source);
+        source.rotate(source.pivot, dA * step);
+      }
+    }
+  },
   bodyTypes: [
     {
       restitution: 2,
@@ -70,22 +105,34 @@ const gameData = {
     { type: "bumper-100", x: 150, y: 160 },
     {
       type: "flipper",
+      name: "RightFlipper",
       x: 150,
       y: 480,
+      pivot: {
+        x: 180,
+        y: 490
+      },
       keyListeners: {
-        X: source => (game, event) => {
-          source.rotate({ x: 190, y: 490 }, Math.PI / 4);
-        }
+        X: source =>
+          function(game, event) {
+            game.startAnimation("RiseRightFlipper");
+          }
       }
     },
     {
       type: "flipper",
+      name: "LeftFlipper",
       x: 50,
       y: 480,
+      pivot: {
+        x: 60,
+        y: 490
+      },
       keyListeners: {
-        Z: source => (game, event) => {
-          source.rotate({ x: 60, y: 490 }, Math.PI / -4);
-        }
+        Z: source =>
+          function(game, event) {
+            game.startAnimation("RiseLeftFlipper");
+          }
       }
     },
 

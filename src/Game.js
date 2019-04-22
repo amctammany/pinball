@@ -1,4 +1,5 @@
 import Shapes from "./shapes";
+import Animation from "./Animation";
 import Vector from "./Vector";
 import { checkMTVAxisDirection, resolveCollision } from "./Collisions";
 import { isFunction } from "./utility";
@@ -10,15 +11,30 @@ class Game {
     this.height = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.renderFn = this.render.bind(this);
+    this.animFn = this.animate.bind(this);
     // this.addEventListeners();
     this.paused = false;
     this.keyListeners = {};
 
     this.state = {};
     this.outputs = {};
+
+    this.namedBodies = {};
+    this.activeAnimations = [];
+
+    this.stopAnimFn = this.stopAnimation.bind(this);
   }
 
-  init({ bodies, buttons, outputs, inputs, bodyTypes, dome, keyListeners }) {
+  init({
+    animations,
+    bodies,
+    buttons,
+    outputs,
+    inputs,
+    bodyTypes,
+    dome,
+    keyListeners
+  }) {
     this.addBodyTypes(bodyTypes);
     this.keyListeners = this.addKeyListeners(keyListeners);
     this.interactionCache = bodyTypes.reduce((acc, bt) => {
@@ -27,10 +43,11 @@ class Game {
     }, {});
     this.bodies = bodies.map(body => {
       const b = this.createBody(body);
-      // b.velocity = Vector.random(-180, 180);
+      // game b.velocity = Vector.random(-180, 180);
 
       return b;
     });
+    this.addAnimations(animations);
     buttons.forEach(({ elementId, cb }) => this.registerButton(elementId, cb));
     inputs.forEach(({ elementId, stateKey, defaultValue }) =>
       this.registerInput(elementId, stateKey, defaultValue)
@@ -42,6 +59,7 @@ class Game {
     if (dome) this.addBodies(Shapes.createDomePolygons(dome));
     this.render();
 
+    this.animLoop = window.setInterval(this.animFn, 100);
     document.body.addEventListener("keypress", e => {
       const listeners = this.keyListeners[e.key.toUpperCase()];
       if (listeners) listeners.forEach(l => l(this, e));
@@ -113,6 +131,20 @@ class Game {
     });
   }
 
+  addAnimations(animations) {
+    this.animations = Object.entries(animations).reduce(
+      (acc, [name, { bodies, duration, method }]) => {
+        acc[name] = new Animation({
+          bodies: bodies.map(b => this.namedBodies[b]),
+          duration,
+          method
+        });
+        return acc;
+      },
+      {}
+    );
+  }
+
   addBodyTypes(bodyTypes) {
     this.bodyTypes = bodyTypes.reduce((acc, bt) => {
       acc[bt.type] = props => Shapes[bt.parent].create({ ...bt, ...props });
@@ -124,6 +156,7 @@ class Game {
     const o = this.bodyTypes.hasOwnProperty(body.type)
       ? this.bodyTypes[body.type](body)
       : Shapes[body.type].create(body);
+    if (o.name) this.namedBodies[o.name] = o;
     if (o.hasOwnProperty("keyListeners"))
       this.addKeyListeners(o.keyListeners, o);
     return o;
@@ -183,7 +216,23 @@ class Game {
     });
   }
 
+  animate(delta) {
+    console.log(this.activeAnimations);
+    this.activeAnimations.forEach(anim => {
+      anim.advance(this.stopAnimFn);
+    });
+  }
+
+  startAnimation(animName) {
+    this.activeAnimations.push(this.animations[animName]);
+  }
+
+  stopAnimation(anim) {
+    this.activeAnimations = this.activeAnimations.filter(a => a !== anim);
+  }
+
   update(delta) {
+    // this.animFn(delta)
     this.detectBoundaries(delta);
     this.detectCollisions(delta);
     this.integrate(delta);

@@ -19,8 +19,12 @@ class Shape {
     mass = 0,
     restitution = 1,
     acceleration,
-    keyListeners
+    keyListeners,
+    name,
+    pivot
   }) {
+    this.name = name;
+    this.pivot = pivot;
     this.type = type;
     this.fillStyle = fillStyle;
     this.strokeStyle = strokeStyle;

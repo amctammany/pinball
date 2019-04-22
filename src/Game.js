@@ -59,7 +59,7 @@ class Game {
     if (dome) this.addBodies(Shapes.createDomePolygons(dome));
     this.render();
 
-    this.animLoop = window.setInterval(this.animFn, 100);
+    this.animInterval = window.setInterval(this.animFn, 20);
     document.body.addEventListener("keypress", e => {
       const listeners = this.keyListeners[e.key.toUpperCase()];
       if (listeners) listeners.forEach(l => l(this, e));
@@ -217,7 +217,6 @@ class Game {
   }
 
   animate(delta) {
-    console.log(this.activeAnimations);
     this.activeAnimations.forEach(anim => {
       anim.advance(this.stopAnimFn);
     });
@@ -239,6 +238,12 @@ class Game {
   }
 
   toggle() {
+    if (this.paused) {
+      this.animInterval = window.setInterval(this.animFn, 20)
+    } else {
+      window.clearInterval(this.animInterval)
+      this.animInterval = null
+    }
     this.paused = !this.paused;
   }
 

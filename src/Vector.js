@@ -68,4 +68,13 @@ export default class Vec2 {
   normal() {
     return this.perpendicular().normalize();
   }
+
+  rotate(pivot, angle) {
+    const cA = Math.cos(angle);
+    const sA = Math.sin(angle);
+    const x = this.x - pivot.x;
+    const y = this.y - pivot.y;
+
+    return new Vec2(x * cA - y * sA + pivot.x, y * cA + x * sA + pivot.y);
+  }
 }

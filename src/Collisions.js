@@ -90,6 +90,7 @@ export function separate(b, axis, overlap) {
   b.move(delta);
 }
 export function resolveCollision(mtv, b1, b2) {
+  if (!b1.invMass && !b2.invMass) return;
   const axis =
     mtv.axis !== undefined
       ? mtv.axis.normalize()
@@ -98,18 +99,19 @@ export function resolveCollision(mtv, b1, b2) {
           .subtract(b2.getPosition())
           .normalize();
 
-  // if (b1.invMass) separate(b1, axis, mtv.overlap);
-  // if (b2.invMass) separate(b2, axis, mtv.overlap);
+  if (b2.invMass) separate(b1, axis, mtv.overlap);
+  if (b1.invMass) separate(b2, axis, mtv.overlap);
 
   const relativeVelocity = b2.velocity.subtract(b1.velocity); // .normalize()
   const velocityAlongNormal = relativeVelocity.dot(axis);
   if (velocityAlongNormal < 0) return;
   const aa = axis.dot(axis);
+  const restitution = Math.min(b1.restitution, b2.restitution);
 
   const totalInvMass = b1.invMass + b2.invMass;
 
   const impulse = axis.multiply(
-    (-2 * velocityAlongNormal) / (totalInvMass * aa)
+    (-1 * (1 + restitution) * velocityAlongNormal) / (totalInvMass * aa)
   );
   b1.velocity = b1.velocity.subtract(impulse.multiply(b1.invMass));
   b2.velocity = b2.velocity.add(impulse.multiply(b2.invMass));

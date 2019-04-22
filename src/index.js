@@ -6,6 +6,7 @@ const gameData = {
   },
   bodyTypes: [
     {
+      restitution: 2,
       type: "bumper-100",
       parent: "Circle",
       radius: 10,
@@ -21,7 +22,6 @@ const gameData = {
           source.move(-10, 0);
         }
       }
-
     },
     {
       type: "flipper",
@@ -38,7 +38,7 @@ const gameData = {
       fillStyle: "gray",
       strokeStyle: "black",
       strokeWidth: 10,
-      mass: 1,
+      mass: 1
     }
   ],
   dome: {
@@ -59,18 +59,35 @@ const gameData = {
           source.velocity = source.velocity.multiply(-1);
         }
       }
-
     },
     { type: "bumper-100", x: 75, y: 110 },
     {
       type: "bumper-100",
       x: 150,
-      y: 60,
+      y: 60
     },
     { type: "bumper-100", x: 225, y: 110 },
     { type: "bumper-100", x: 150, y: 160 },
-    { type: "flipper", x: 150, y: 480 },
-    { type: "flipper", x: 50, y: 480 },
+    {
+      type: "flipper",
+      x: 150,
+      y: 480,
+      keyListeners: {
+        X: source => (game, event) => {
+          source.rotate({ x: 190, y: 490 }, Math.PI / 4);
+        }
+      }
+    },
+    {
+      type: "flipper",
+      x: 50,
+      y: 480,
+      keyListeners: {
+        Z: source => (game, event) => {
+          source.rotate({ x: 60, y: 490 }, Math.PI / -4);
+        }
+      }
+    },
 
     {
       type: "Polygon",

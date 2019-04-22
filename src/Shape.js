@@ -17,12 +17,14 @@ class Shape {
     ax = 0,
     ay = 0,
     mass = 0,
+    restitution = 1,
     acceleration,
     keyListeners
   }) {
     this.type = type;
     this.fillStyle = fillStyle;
     this.strokeStyle = strokeStyle;
+    this.restitution = restitution;
     this.position = new Vector(x, y);
     this.velocity = new Vector(vx, vy);
     this.acceleration = new Vector(ax, ay);

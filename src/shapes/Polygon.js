@@ -64,6 +64,10 @@ class Polygon extends Shape {
     const dy = y - this.centroid().y;
     this.move(dx, dy);
   }
+
+  rotate(pivot, angle) {
+    this.points = this.points.map(pt => pt.rotate(pivot, angle));
+  }
 }
 
 export default Polygon;

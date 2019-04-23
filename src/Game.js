@@ -60,16 +60,24 @@ class Game {
     this.render();
 
     this.animInterval = window.setInterval(this.animFn, 20);
+
+    const keysdown = new Set()
     document.body.addEventListener("keydown", e => {
+      if (keysdown.has(e.key.toUpperCase())) return;
       const listeners = (this.keyListeners[e.key.toUpperCase()] || {}).down;
+      keysdown.add(e.key.toUpperCase())
       if (listeners) listeners.forEach(l => l(this, e));
     });
     document.body.addEventListener("keyup", e => {
+      if (keysdown.has(e.key.toUpperCase())) keysdown.delete(e.key.toUpperCase())
       const listeners = (this.keyListeners[e.key.toUpperCase()] || {}).up;
       if (listeners) listeners.forEach(l => l(this, e));
     });
     document.body.addEventListener("keypress", e => {
+      if (keysdown.has(e.key.toUpperCase())) {console.log('press' + e.key)};
       const listeners = (this.keyListeners[e.key.toUpperCase()] || {}).press;
+      keysdown.add(e.key.toUpperCase())
+      console.log(keysdown)
       if (listeners) listeners.forEach(l => l(this, e));
     });
   }

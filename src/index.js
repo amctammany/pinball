@@ -26,18 +26,20 @@ const gameData = {
     FallLeftFlipper: {
       bodies: ["LeftFlipper"],
       duration: 4,
+      singleRun: true,
       method(source, step) {
         const dA = Math.PI / 4 / this.duration;
         source.rotate(source.pivot, dA * step);
-      }
+      },
     },
     FallRightFlipper: {
       bodies: ["RightFlipper"],
       duration: 4,
+      singleRun: true,
       method(source, step) {
         const dA = Math.PI / -4 / this.duration;
         source.rotate(source.pivot, dA * step);
-      }
+      },
     }
   },
   bodyTypes: [
@@ -120,12 +122,12 @@ const gameData = {
       keyListeners: {
         X: {
           up: source => (game, event) => {
-            game.stopAnimation("RiseRightFlipper");
+            //game.stopAnimation("RiseRightFlipper");
             game.startAnimation("FallRightFlipper");
           },
           press: source => (game, event) => {
             game.startAnimation("RiseRightFlipper");
-            game.stopAnimation("FallRightFlipper");
+            //game.stopAnimation("FallRightFlipper");
           }
         }
       }
@@ -142,12 +144,12 @@ const gameData = {
       keyListeners: {
         Z: {
           up: source => (game, event) => {
-            game.stopAnimation("RiseLeftFlipper");
+            //game.stopAnimation("RiseLeftFlipper");
             game.startAnimation("FallLeftFlipper");
           },
           press: source => (game, event) => {
             game.startAnimation("RiseLeftFlipper");
-            game.stopAnimation("FallLeftFlipper");
+            //game.stopAnimation("FallLeftFlipper");
           }
         }
       }

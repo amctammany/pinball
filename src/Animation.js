@@ -1,15 +1,18 @@
 export default class Animation {
-  constructor({ bodies, duration, method }) {
+  constructor({ bodies, duration, method, name, singleRun = false}) {
+    this.name = name
     this.duration = duration;
     this.bodies = bodies;
     this.method = method;
     this.step = 0;
     this.active = false;
+    this.singleRun = singleRun
   }
 
-  advance() {
-    if (this.step >= this.duration) {
-      // removeAnim(this);
+  advance(removeAnim) {
+    if (this.active && this.step >= this.duration) {
+      if (this.singleRun) this.stop()
+       //removeAnim(this);
       // this.step = 0;
       // this.active = false;
       return;
@@ -24,9 +27,8 @@ export default class Animation {
     this.active = true;
   }
 
-  stop() {
+  stop(removeAnim) {
     this.step = 0;
     this.active = false;
-    // removeAnim(this)
   }
 }

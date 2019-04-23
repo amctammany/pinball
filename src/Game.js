@@ -144,10 +144,12 @@ class Game {
 
   addAnimations(animations) {
     this.animations = Object.entries(animations).reduce(
-      (acc, [name, { bodies, duration, method }]) => {
+      (acc, [name, { bodies, duration, method, singleRun }]) => {
         acc[name] = new Animation({
           bodies: bodies.map(b => this.namedBodies[b]),
           duration,
+          name,
+          singleRun,
           method
         });
         return acc;
@@ -243,8 +245,11 @@ class Game {
 
   stopAnimation(animName) {
     const anim = this.animations[animName];
-    anim.stop();
+    if (!anim) return
+    console.log(anim)
+    anim.stop(this.stopAnimFn);
     this.activeAnimations = this.activeAnimations.filter(a => a !== anim);
+    console.log(this.activeAnimations)
   }
 
   update(delta) {

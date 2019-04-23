@@ -235,11 +235,11 @@ class Game {
     });
   }
 
-  startAnimation(animName) {
+  startAnimation(animName, step = 0) {
     const anim = this.animations[animName];
 
     if (anim.active) return;
-    anim.start()
+    anim.start(step);
     if (this.activeAnimations.indexOf(anim) < 0)
       this.activeAnimations.push(anim);
   }
@@ -247,10 +247,11 @@ class Game {
   removeAnimation(anim) {
     this.activeAnimations = this.activeAnimations.filter(a => a !== anim);
   }
+
   stopAnimation(animName) {
     const anim = this.animations[animName];
-    if (!anim) return
-    anim.stop();
+    if (!anim) return 0;
+    return anim.stop();
   }
 
   update(delta) {

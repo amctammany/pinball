@@ -30,7 +30,7 @@ const gameData = {
       method(source, step) {
         const dA = Math.PI / 4 / this.duration;
         source.rotate(source.pivot, dA * step);
-      },
+      }
     },
     FallRightFlipper: {
       bodies: ["RightFlipper"],
@@ -39,7 +39,7 @@ const gameData = {
       method(source, step) {
         const dA = Math.PI / -4 / this.duration;
         source.rotate(source.pivot, dA * step);
-      },
+      }
     }
   },
   bodyTypes: [
@@ -122,11 +122,9 @@ const gameData = {
       keyListeners: {
         X: {
           up: source => (game, event) => {
-            game.stopAnimation("RiseRightFlipper");
             game.startAnimation("FallRightFlipper");
           },
           down: source => (game, event) => {
-            game.stopAnimation("FallRightFlipper");
             game.startAnimation("RiseRightFlipper");
           }
         }
@@ -144,11 +142,9 @@ const gameData = {
       keyListeners: {
         Z: {
           up: source => (game, event) => {
-            game.stopAnimation("RiseLeftFlipper");
             game.startAnimation("FallLeftFlipper");
           },
           down: source => (game, event) => {
-            game.stopAnimation("FallLeftFlipper");
             game.startAnimation("RiseLeftFlipper");
           }
         }

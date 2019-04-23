@@ -2,7 +2,9 @@ import Game from "./Game";
 
 const gameData = {
   keyListeners: {
-    P: (game, event) => game.toggle()
+    P: {
+      down: (game, event) => game.toggle()
+    }
   },
   animations: {
     RiseLeftFlipper: {
@@ -31,10 +33,9 @@ const gameData = {
     },
     FallRightFlipper: {
       bodies: ["RightFlipper"],
-      duration: 8,
+      duration: 4,
       method(source, step) {
         const dA = Math.PI / -4 / this.duration;
-        console.log(source);
         source.rotate(source.pivot, dA * step);
       }
     }
@@ -53,8 +54,10 @@ const gameData = {
           game.changeState("score", score => score + 10)
       },
       keyListeners: {
-        S: source => (game, event) => {
-          source.move(-10, 0);
+        S: {
+          down: source => (game, event) => {
+            source.move(-10, 0);
+          }
         }
       }
     },
@@ -90,8 +93,10 @@ const gameData = {
       vx: 0,
       vy: -200,
       keyListeners: {
-        A: source => (game, event) => {
-          source.velocity = source.velocity.multiply(-1);
+        A: {
+          down: source => (game, event) => {
+            source.velocity = source.velocity.multiply(-1);
+          }
         }
       }
     },
@@ -113,10 +118,16 @@ const gameData = {
         y: 488
       },
       keyListeners: {
-        X: source =>
-          function(game, event) {
+        X: {
+          up: source => (game, event) => {
+            game.stopAnimation("RiseRightFlipper");
+            game.startAnimation("FallRightFlipper");
+          },
+          press: source => (game, event) => {
             game.startAnimation("RiseRightFlipper");
+            game.stopAnimation("FallRightFlipper");
           }
+        }
       }
     },
     {
@@ -129,10 +140,16 @@ const gameData = {
         y: 488
       },
       keyListeners: {
-        Z: source =>
-          function(game, event) {
+        Z: {
+          up: source => (game, event) => {
+            game.stopAnimation("RiseLeftFlipper");
+            game.startAnimation("FallLeftFlipper");
+          },
+          press: source => (game, event) => {
             game.startAnimation("RiseLeftFlipper");
+            game.stopAnimation("FallLeftFlipper");
           }
+        }
       }
     },
 

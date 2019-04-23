@@ -34,15 +34,16 @@ class Shape {
     this.acceleration = new Vector(ax, ay);
     this.mass = mass;
     this.invMass = mass ? 1 / mass : 0;
-    if (keyListeners) {
-      this.keyListeners = Object.entries(keyListeners).reduce(
-        (acc, [key, cb]) => {
-          acc[key] = src => cb(src);
-          return acc;
-        },
-        {}
-      );
-    }
+    this.keyListeners = keyListeners;
+    // if (keyListeners) {
+    // this.keyListeners = Object.entries(keyListeners).reduce(
+    // (acc, [key, cb]) => {
+    // acc[key] = src => cb(src);
+    // return acc;
+    // },
+    // {}
+    // );
+    // }
   }
 
   isPointInPath(ctx, x, y) {

@@ -4,12 +4,14 @@ export default class Animation {
     this.bodies = bodies;
     this.method = method;
     this.step = 0;
+    this.active = false;
   }
 
-  advance(removeAnim) {
+  advance() {
     if (this.step >= this.duration) {
-      removeAnim(this);
-      this.step = 0;
+      // removeAnim(this);
+      // this.step = 0;
+      // this.active = false;
       return;
     }
     this.step += 1;
@@ -18,10 +20,13 @@ export default class Animation {
   }
 
   start(delta) {
-    this.startTime = delta;
-    this.elapsedTime = undefined;
-    this.running = true;
+    this.step = 0;
+    this.active = true;
   }
 
-  stop() {}
+  stop() {
+    this.step = 0;
+    this.active = false;
+    // removeAnim(this)
+  }
 }

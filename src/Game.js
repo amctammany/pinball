@@ -14,7 +14,7 @@ class Game {
     this.animFn = this.animate.bind(this);
     // this.addEventListeners();
     this.paused = false;
-    this.keyListeners = {};
+    this.keyListeners = { up: {}, down: {} };
 
     this.state = {};
     this.outputs = {};
@@ -60,17 +60,28 @@ class Game {
     this.render();
 
     this.animInterval = window.setInterval(this.animFn, 20);
+    document.body.addEventListener("keydown", e => {
+      const listeners = this.keyListeners[e.key.toUpperCase()].down;
+      if (listeners) listeners.forEach(l => l(this, e));
+    });
+    document.body.addEventListener("keyup", e => {
+      const listeners = this.keyListeners[e.key.toUpperCase()].up;
+      if (listeners) listeners.forEach(l => l(this, e));
+    });
     document.body.addEventListener("keypress", e => {
-      const listeners = this.keyListeners[e.key.toUpperCase()];
+      const listeners = this.keyListeners[e.key.toUpperCase()].press;
       if (listeners) listeners.forEach(l => l(this, e));
     });
   }
 
   addKeyListeners(keyListeners = {}, bound) {
     return Object.entries(keyListeners).reduce((acc, [k, v]) => {
-      const f = bound ? v(bound) : v;
       const upperK = k.toUpperCase();
-      acc[upperK] = !acc.hasOwnProperty(upperK) ? [f] : [...acc[upperK], f];
+      acc[upperK] = Object.entries(v).reduce((ac, [event, fn]) => {
+        const f = bound ? fn(bound) : fn;
+        ac[event] = !ac.hasOwnProperty(event) ? [f] : [...ac[event], f];
+        return ac;
+      }, acc[upperK] || {});
       return acc;
     }, this.keyListeners);
   }
@@ -223,10 +234,16 @@ class Game {
   }
 
   startAnimation(animName) {
-    this.activeAnimations.push(this.animations[animName]);
+    const anim = this.animations[animName];
+
+    if (anim.active) return;
+    if (this.activeAnimations.indexOf(anim) < 0)
+      this.activeAnimations.push(anim);
   }
 
-  stopAnimation(anim) {
+  stopAnimation(animName) {
+    const anim = this.animations[animName];
+    anim.stop();
     this.activeAnimations = this.activeAnimations.filter(a => a !== anim);
   }
 
@@ -239,10 +256,10 @@ class Game {
 
   toggle() {
     if (this.paused) {
-      this.animInterval = window.setInterval(this.animFn, 20)
+      this.animInterval = window.setInterval(this.animFn, 20);
     } else {
-      window.clearInterval(this.animInterval)
-      this.animInterval = null
+      window.clearInterval(this.animInterval);
+      this.animInterval = null;
     }
     this.paused = !this.paused;
   }

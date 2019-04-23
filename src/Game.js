@@ -22,7 +22,7 @@ class Game {
     this.namedBodies = {};
     this.activeAnimations = [];
 
-    this.stopAnimFn = this.stopAnimation.bind(this);
+    this.removeAnim = this.removeAnimation.bind(this);
   }
 
   init({
@@ -61,15 +61,15 @@ class Game {
 
     this.animInterval = window.setInterval(this.animFn, 20);
     document.body.addEventListener("keydown", e => {
-      const listeners = this.keyListeners[e.key.toUpperCase()].down;
+      const listeners = (this.keyListeners[e.key.toUpperCase()] || {}).down;
       if (listeners) listeners.forEach(l => l(this, e));
     });
     document.body.addEventListener("keyup", e => {
-      const listeners = this.keyListeners[e.key.toUpperCase()].up;
+      const listeners = (this.keyListeners[e.key.toUpperCase()] || {}).up;
       if (listeners) listeners.forEach(l => l(this, e));
     });
     document.body.addEventListener("keypress", e => {
-      const listeners = this.keyListeners[e.key.toUpperCase()].press;
+      const listeners = (this.keyListeners[e.key.toUpperCase()] || {}).press;
       if (listeners) listeners.forEach(l => l(this, e));
     });
   }
@@ -231,7 +231,7 @@ class Game {
 
   animate(delta) {
     this.activeAnimations.forEach(anim => {
-      anim.advance(this.stopAnimFn);
+      anim.advance(this.removeAnim);
     });
   }
 
@@ -239,17 +239,18 @@ class Game {
     const anim = this.animations[animName];
 
     if (anim.active) return;
+    anim.start()
     if (this.activeAnimations.indexOf(anim) < 0)
       this.activeAnimations.push(anim);
   }
 
+  removeAnimation(anim) {
+    this.activeAnimations = this.activeAnimations.filter(a => a !== anim);
+  }
   stopAnimation(animName) {
     const anim = this.animations[animName];
     if (!anim) return
-    console.log(anim)
-    anim.stop(this.stopAnimFn);
-    this.activeAnimations = this.activeAnimations.filter(a => a !== anim);
-    console.log(this.activeAnimations)
+    anim.stop();
   }
 
   update(delta) {

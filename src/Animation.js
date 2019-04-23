@@ -10,24 +10,25 @@ export default class Animation {
   }
 
   advance(removeAnim) {
-    if (this.active && this.step >= this.duration) {
-      if (this.singleRun) this.stop()
+    if (!this.active) removeAnim(this)
+    if (this.step > this.duration) {
+      if (this.singleRun) {
+       return removeAnim(this);
+      }
        //removeAnim(this);
-      // this.step = 0;
-      // this.active = false;
       return;
     }
     this.step += 1;
     this.bodies.forEach(b => this.method(b, this.step));
-    // this.method(this.bodies, this.step)
   }
 
   start(delta) {
+    if (this.active) return
     this.step = 0;
     this.active = true;
   }
 
-  stop(removeAnim) {
+  stop() {
     this.step = 0;
     this.active = false;
   }

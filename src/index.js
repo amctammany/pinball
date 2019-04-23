@@ -122,12 +122,12 @@ const gameData = {
       keyListeners: {
         X: {
           up: source => (game, event) => {
-            //game.stopAnimation("RiseRightFlipper");
+            game.stopAnimation("RiseRightFlipper");
             game.startAnimation("FallRightFlipper");
           },
-          press: source => (game, event) => {
+          down: source => (game, event) => {
+            game.stopAnimation("FallRightFlipper");
             game.startAnimation("RiseRightFlipper");
-            //game.stopAnimation("FallRightFlipper");
           }
         }
       }
@@ -144,12 +144,12 @@ const gameData = {
       keyListeners: {
         Z: {
           up: source => (game, event) => {
-            //game.stopAnimation("RiseLeftFlipper");
+            game.stopAnimation("RiseLeftFlipper");
             game.startAnimation("FallLeftFlipper");
           },
-          press: source => (game, event) => {
+          down: source => (game, event) => {
+            game.stopAnimation("FallLeftFlipper");
             game.startAnimation("RiseLeftFlipper");
-            //game.stopAnimation("FallLeftFlipper");
           }
         }
       }
